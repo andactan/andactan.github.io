@@ -14,15 +14,6 @@ Motivation arises from this very specific human ability. Can we enable a neural 
 
 # Introduction
 
-To grant that ability to the machines, we should let them understand given scenes and encode them into latent space representations. From those intermediate representations, they should also be able to generate plausible images back. And actually, deep generative models and specifically **Generative Adversarial Networks (GANs)** [[Goodfellow et, al, 2014]](https://arxiv.org/abs/1406.2661)excels at this duty with their terrific and simplistic encoder-decoder architecture. However, deep generative models have their flaws in which intermediaterepresentations are often limited to a single object, not easy to interpret, and missing the 3D structure behind 2D projection. As aresult, deep generative models are not perfectly fit for scene manipulation tasks such as moving objects around. Additioally, as itis a scene manipulation task at hand, it is needed to have human-interpretable and intuitive representations so that any human useror a graphics engine is enabled to use.
+To grant that ability to the machines, we should let them understand given scenes and encode given scenes into latent space representations. From those intermediate representations, they should also be able to generate plausible images back. And actually, deep generative models and specifically **Generative Adversarial Networks (GANs)** [[Goodfellow et, al, 2014]](https://arxiv.org/abs/1406.2661) excels at this duty with their terrific and simplistic encoder-decoder architecture. However, deep generative models have their flaws in which intermediate representations are often limited to a single object, not easy to interpret, and missing the 3D structure behind 2D projection. As aresult, deep generative models are not perfectly fit for scene manipulation tasks such as moving objects around. Additionally, as it is a scene manipulation task at hand, it is needed to have human-interpretable and intuitive representations so that any human user or a graphics engine is enabled to use.
 
-
-In this paper, motivated by the aforementioned human abilities, authors propose an expressive, disentangled and interpretable scene representation method for machines.To overcome those above problems, 
-
-
-$$ x = A^{3} $$
-{: style="text-align:center;"}
-
-This is a test paragraph.
-
-Another paragraph.
+In this paper, motivated by the aforementioned human abilities, authors propose an expressive, disentangled and interpretable scene representation method for machines.
