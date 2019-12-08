@@ -16,4 +16,8 @@ Motivation arises from this very specific human ability. Can we enable a neural 
 
 To grant that ability to the machines, we should let them understand given scenes and encode given scenes into latent space representations. From those intermediate representations, they should also be able to generate plausible images back. And actually, deep generative models and specifically **Generative Adversarial Networks (GANs)** [[Goodfellow et, al, 2014]](https://arxiv.org/abs/1406.2661) excels at this duty with their terrific and simplistic encoder-decoder architecture. However, deep generative models have their flaws in which intermediate representations are often limited to a single object, not easy to interpret, and missing the 3D structure behind 2D projection. As aresult, deep generative models are not perfectly fit for scene manipulation tasks such as moving objects around. Additionally, as it is a scene manipulation task at hand, it is needed to have human-interpretable and intuitive representations so that any human user or a graphics engine is enabled to use.
 
-In this paper, motivated by the aforementioned human abilities, authors propose an expressive, disentangled and interpretable scene representation method for machines.
+{% include image.html url="/assets/figures/gans.png" description="Generative Adversarial Network Structure" %}
+
+
+
+In this paper, motivated by the aforementioned human abilities, authors propose an expressive, disentangled and interpretable scene representation method for machines. The proposed architecture elaborates an encoder-decoder structure for the main purpose and divides different tasks to three separate branches: one for **semantics**, one for **geometry** and one for **texture**. This separative and human-interpretable approach also overcomes the mentioned flaws of the deep generative models. By adapting this architecture, it is further possible to easily manipulate given images.
