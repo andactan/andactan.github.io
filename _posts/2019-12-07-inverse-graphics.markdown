@@ -22,10 +22,6 @@ In this paper, motivated by the aforementioned human abilities, authors propose 
 
 {% include image.html url="/assets/figures/proposal.png" description="Proposed Method" %}
 
-### **Datasets**
-
-The proposed method has been tested and validated upon two different datasets: **Virtual KITTI** [[Gaidon et al., 2016]](https://arxiv.org/abs/1605.06457){:target="_blank"} and **Cityscapes** [[Cordts et al., 2016]](https://arxiv.org/abs/1604.01685){:target="blank"}. Both quantitative and qualitative experiments are demonstrated over those two datasets. Additionally, authors create an image editing benchmark on **Virtual KITTI** to elaborate the effectiveness of the proposed method and also to compare editing power against the 2D baseline models.
-
 ## **Related Work**
 
 Inspiration for the proposed method comes from three different sets of state-of-art work. Authors cancel out the flaws of prior works by combining the best features of all mentioned methods below:
@@ -165,3 +161,79 @@ $$
 $$
 
 where $$ \lambda_{FM} $$ and $$ \lambda_{Recon} $$ are the relative importance of each objective respectively.
+
+#### **Implementation Details and Configurations**
+In this section, authors detail the implementation and trainig configuration for each branch.
+
+##### **Semantic Branch**
+Semantic branch adopts Dilated Residual Networks for semantic segmentation. Network is trained for 25 epochs.
+
+##### **Geometric Branch**
+They use Mask-RCNN for object proposal. For object meshes, they choose eight different CAD models from ShapeNet [[Chang et al., 2015](#home)] as candidates. They set $$ \lambda_{reproj} = 0.1 $$. They first train the network alone with $$ \mathcal{L}_{pred} $$ using Adam optimizer [[Kingma et al., 2015](#home)] by setting learning rate to $$10^{-3}$$ for $$ 256 $$ epochs and then fine-tune it with 
+$$ \mathcal{L}_{pred} + \lambda_{reproj}\mathcal{L}_{reproj} $$ 
+and REINFORCE with a learning rate of $$ 10^{-4} $$ for another 64 epochs.
+
+##### **Textural Branch**
+They use same architecture as in [Wang et al., 2018](#home). They use two different discriminators of different scales and one generator. They set $$ \lambda_{FM} = 5 $$ and $$ \lambda_{Recon} = 10 $$ and train the textural branch for $$ 60 $$ epoch on Virtual KITTI and $$ 100 $$ epoch on Cityscapes.
+
+### **Results and Comparisons**
+Results in the paper are reported two-fold:
+1.  Image editing capabilities of proposed method
+2.  Analysis of design choices and accuracy of representations
+
+The proposed method has been tested and validated upon two different datasets: **Virtual KITTI** [[Gaidon et al., 2016]](https://arxiv.org/abs/1605.06457){:target="_blank"} and **Cityscapes** [[Cordts et al., 2016]](https://arxiv.org/abs/1604.01685){:target="blank"}. Both quantitative and qualitative experiments are demonstrated over those two datasets. Additionally, authors create an image editing benchmark on **Virtual KITTI** to elaborate the effectiveness of the proposed method and also to compare editing power against the 2D baseline models.
+
+#### **Datasets**
+##### **Virtual KITTI**
+The dataset is consisted of five different worlds rendered under ten different conditions, leading to sum of 21,260 images with instance and semantic segmentations. Each object has its own 3D ground truth attributes encoded. 
+
+##### **Cityscapes**
+The dataset contains 5,000 images with fine annotations and 20,000 with coarse annotations obtained in several conditions (seasons, daylight conditions, weather, etc.) in 30 cities with 30 classes of complexity. With fine annotations, they mean deep pixel-wise annotations for each object's semantic class. But the problem with this dataset is that it lacks 3D annotations for objects. Therefore, for each given Cityscapes images they first predict 3D attibutes with the geometric branch pre-trained on Virtual KITTI dataset, then try to infer 3D and deformation parameters.
+
+#### **Image Editing Capabilities**
+The disentanglement of attributes of an object provides an expressive 3D manipulation capability. Its 3D attributes can be changed. For example, it might scaled up and down or we can rotate it however we would like to, while keeping visual appearance at still. Likewise, we can change the appearance of the object or even the background in any way imaginable.
+
+The proposed method is compared two baselines:
+1.  **2D:** Given the source and target positions, only apply 2D translation and scaling, without rotation the object at all.
+2.  **2D+:** Given the source and target positions, apply 2D translation and scaling, and rotate the 2D silhoutte of the object (instead of 3D shape) along the $$y-$$axis.
+
+To allow to evaluate image editing capabilities, they have built the **Virtual KITTI Image Editing Benchmark** wherein it is consisted of 92 pairs of images, with the one being the original image and the other being the edited one in each pair.
+
+{% include image.html url="/assets/figures/kitti.png" description="Example user editing results on Virtual KITTI" %}
+{% include image.html url="/assets/figures/city_scapes.png" description="Example user editing results on Cityscapes" %}
+
+For the comparison metric, they employ Learned Perceptual Image Patch Similarity (LPIPS) [[Zhang et al., 2018](#home)], instead of adopting the L1 or L2 distance, since, while two images may differ slightly in perception, their L1/L2 distance may have a large value. They compare proposed model and the baselines and apply LPIPS in three different configurations:
+1.  **The full image**: Evaluate the perceptual similarity on the whole image (whole)
+2.  **All edited regions**: Evaluate the perceptual similarity on all the edited regions (all)
+3.  **Largest edited region**: Evaluate the perceptual similarity only on the largest edited region (largest)
+
+Addition to the quantitative evaluation, they also conduct an human study in which participants report their preferences on 3D-SDN over two other baselines according to which edited result looks closer to the target. They ask 120 human subjects on [Amazon Mechanical Turk](#home) and ask them whether which image is more realistic than the other in two settings: 3D-SDN vs. 2D and 3D-SDN vs 2D+.
+
+{% include image.html url="/assets/figures/editing_results.png" description="Evaluations on Editing Benchmark" %}
+
+In LPIPS metric, scores ranges from 0 to 1, 0 meaning that two images are the same. Therefore, lower scores are better. As you can see from the perception similarity scores, the proposed architecture overwhelms both baselines in every experiment setting. Likewise, in human study, users often prefer 3D-SDN over other two baselines.
+
+#### **Analysis of Design Choices and Accuracy of Representations**
+To understand contributions of each component proposed, they experiment on four diffent settings in which a different component excluded from the full proposed model ,,and compare them to the original, full model. The experiment configurations are:
+1. **w/o $$\mathcal{L}_{reproj}$$**: Use only $$\mathcal{L}_{pred}$$
+2. **w/o quaternion constraint**: Use full quaternion vector, instead of limiting to $$R$$
+3. **w/o normalized distance $$\tau$$**: Predict the original distance in log-space rather than the normalized distance
+4. **w/o MultiCAD and FFD**: Use single CAD model without free-form deformation
+   
+They also add a 3D box estimation model [[Mousavian et al., 2017]](#home), which first infers the object's 2D bounding box and searches for its 3D bounding box, to the comparison list.
+
+{% include image.html url="/assets/figures/design_results.png" description="Evaluation of Different Variants on Virtual KITTI" %}
+
+In the above figure, different quantities are evaluated with different metrics:
+*   For rotation, orientation similarity $$ (1 + \cos{\theta})/2 $$, where $$ \theta $$ is the geodesic distance between the predicted and the ground truth
+*   For distance, absolute log-error $$ \| log t - log \tilde{t} \|$$
+*   For scale, Euclidean distance $$ \| \textbf{s} - \tilde{\textbf{s}} \|_{2} $$
+*   For reprojection error, compute per-pixel reprojection error between 2D silhouttes and ground truth segmentations
+
+
+As you can see from the above figure, the smallest reprojection error and the highest orientation similarity have been met by the full model. It ultimately shows that all proposed components contribute to the final performance of full 3D-SDN model.
+
+### Conclusion and Discussion
+In this work, authors propose a novel encoder-decoder architecture that disentangles semantic, geometric and textural attributes of the detected objects into expressive and rich representations. With these representations, users are enabled easily manipulate the given images in various ways. This proposed method also overcomes the single-object limitations in its prior work and cancels out the occlusion problem. Although the main focus here is 3D-aware scene manipulation, learned distentangled and expressive representations can also be used in various tasks such as image captioning.
+
+To my discussion, even though the proposed method eliminates couple of limitations in its prior state-of-art works, it is still limited to just one specific set of objects: vehicles. Without introducing new meshes, it is not applicable to more complex and diverse sceneries, such as indoor images. For any regular indoor image, we face lots of different types of objects. And as the number of object classes and the number of mesh types in each class increases, unfortunately overall complexity increases dramatically. Also, the model might not have the capability to handle much deformable shapes like human bodies without introducing more deformation parameters.
