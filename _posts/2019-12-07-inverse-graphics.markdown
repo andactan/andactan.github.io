@@ -7,9 +7,8 @@ permalink: /inverse-graphics/
 ---
 ## **Abstract**
 
-As humans, we renown at perceiving the world around us and simultaneously make deductions out of it. But, what is interesting and also magnificient part about it is, as we do perceive the world around, we are also able to simulate and imagine in what ways changes can appear unto our perceptions for future scenarios. For instance, we can, without showing much effort, 
-detect and recognize cars on a road, and infer their attributes. At the same time, we have also a special power by which we could imagine how cars may move on the road, or they will ever rotate right or left, or even think about what might
-be a more plausible color a car may have other than the driver's choice. 
+As humans, we are renown at perceiving the world around us and simultaneously make deductions out of it. But, what is interesting and also magnificient is that as we do perceive the world around, we are also able to simulate and imagine in what ways changes can appear unto our perceptions for future scenarios. For instance, we can, without showing much effort, detect and recognize cars on a road, and infer their attributes. At the same time, we have also a special power by which we could imagine how cars may move on the road, or they will ever rotate right or left, or we can even wonder about what might
+be a more plausible color the car may have other than the driver's choice. 
 
 Motivation arises from this very specific human ability. Can we enable a neural network architecture gain such ability?
 
