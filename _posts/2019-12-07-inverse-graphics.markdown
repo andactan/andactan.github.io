@@ -3,6 +3,7 @@ layout: post
 title:  "3D-Aware Scene Manipulation via Inverse Graphics"
 date:   2019-12-07 16:18:21 +0100
 categories: jekyll update
+permalink: /inverse-graphics/
 ---
 ## **Abstract**
 
