@@ -24,28 +24,28 @@ In this paper, motivated by the aforementioned human abilities, authors propose 
 
 ## **Related Work**
 
-Inspiration for the proposed method comes from three different sets of state-of-art work. Authors cancel out the flaws of prior works by combining the best features of all mentioned methods below:
+As said before, thw whole proposed method is consisted of three different pipelines: first an interpretable image representation is obtained for the given image, second another pipeline takes those interpretable representations of the given image and tries to synthesize an realistic image back, third but not least enables its user to edit images in anyway imagined since disentangled and human-interpretable representations is at hand. Therefore, inspiration for the proposed method comes from three different sets of state-of-art work:
+1.  Interpretable image representation
+2.  Deep generative models
+3.  Deep image manipulation
+
+Authors cancel out the flaws of prior works by combining the best features of all mentioned methods below.
 
 ### Interpretable Image Representation
+The main idea behind inverse graphics and obtaining image representations is to reverse-engineer an given image such that end-product can be used to understand the physical world that produced the image or edit the image in various way since the world behind is viable to such manipulations after getting to know it.
 
-The main idea of the proposed method comes from obtaining interpretable visual representations with neural networks.
+This work is inspired by prior work on obtaining interpretable image representations by [[Kulkarni et al., 2015]()] and [[Chen et al., 2016]()]. [[Kulkarni et al., 2015]()] proposes and deep neural network which is composed of several convolution and de-convolution layers. It is called **Deep Convolution Inverse Graphics Network (DC-IGN)** and the model learns interpretable and disentangled representations for pose transformations and lighting conditions. Given a single image, the proposed model can produce different images of the same object with different poses and lighting variations.
 
-#### Deep Convolutional Inverse Graphics Network [[Kulkarni et al., 2015]](https://arxiv.org/abs/1503.03167)
-In this method, to obtain representations from the given image authors freezes a subset of latent space elements while feeding images that move along a specific direction on the image manifold. While this is one of the first succesfull attempts of scene understanding and representation creation, the proposed method focuses on only a single object.
+Another line of inspiration comes from the **InfoGAN**[[Chen et al., 2016](https://arxiv.org/abs/1606.03657)]. InfoGAN proposes to feed traditional, vanilla GAN [[Goodfellow et al., 2014]()] with two disentangled vectors, namely 'noise vector' and 'latent code', rather than just simply submitting an single noise vector. Thus, as having two different 'turn knobs' for the images, it is easy to obtain disentangled and easy-to-manipulate representations.
 
-#### Neural Scene De-rendering [[Wu et al., 2017a]](http://nsd.csail.mit.edu/papers/nsd_cvpr.pdf)
-This is the method which the proposed disentangled and differentiable method most resembles. In the paper, authors likewise propose an encoder-decoder architecture that uses a neural network for the encoder part and a graphics engine for the decoder. However, since backpropagating gradients from the graphics engine is not possible (because of discrete representations of features), it is not generalizable to a new environment.
-
+But the problem with those two powerful implementations is that they are limited to single objects, whereas overall aim of the proposed method is to have an scene understanding model which captures the whole complexity in images with multiple objects. Therefore, this paper most resembles the work by [[Wu et al., 2017](http://nsd.csail.mit.edu/papers/nsd_cvpr.pdf)] in which it is proposed to 'de-render' the given image with an encoder-decoder framework. While encoder part uses a classical neural network structure, the decoder part is simply a 'graphics engine' for which encoder produces human-readable and interpretable representations. Although graphics engines in their nature require structured and interpretable representations, it is not possible to back-propagate gradients end-to-end because of their discrete and non-differentiable characteristics. Rather, they use an black-box optimization via REINFORCE algorithm [[reinforce et al.,]()]. Compared to this work, the proposed method in this paper uses differentiable models for both encoder and decoder parts.
 
 ### Deep Generative Models
-Deep generative models have been used extensively for image synthesis nad learning internal representations. However, representations learned by these methods are not likely to be interpreted easily and often ignore the 3D characteristics of our world.
-
-#### Synthesizing 3D Shapes via Modeling Multi-view Depth Maps and Silhouttes with Deep Generative Models [[Soltani et al., 2017]](#home)
---> it does something doing something on something by something
+Deep generative model is a powerful way to learning rich, internal representations in a unsupervised manner and using those representations to synthesize realistic images back. But, those rich and internal latent representations are hard to interpret for humans and more of than not ignore 3D characteristics of our 3D world. Many work have investigated ways of 3D reconstruction from a single color image[[Choy et al., 2016](https://arxiv.org/abs/1604.00449), [Kar et al., 2015](https://arxiv.org/abs/1411.6069), [Tatarchenko et al., 2016](https://arxiv.org/abs/1511.06702), [Tulsiani et al., 2017](https://arxiv.org/abs/1704.06254), [Wu et al., 2017b](https://arxiv.org/abs/1711.03129)], depth map or silhoutte[[Soltani et al., 2017](https://www.jiajunwu.com/papers/mv3d_cvpr.pdf)]. This works is built upon those proposals and extended them. It does not only reconstructs the image from internal representations via 2D differentiable renderer, but also does it provide an 3D-aware scene manipulation option. 
 
 
 ### Deep Image Manipulation
-Learning-based methods have enabled their users in various tasks, such as image-to-image translation [[Isola et al., 2017](https://arxiv.org/abs/1611.07004), [Zhu et al., 2017a](https://arxiv.org/abs/1703.10593), [Liu et al., 2017](https://arxiv.org/abs/1703.00848)], style transfer [[Gatys et al., 2016](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf)], automatic colorization [[Zhang et al., 2016](https://arxiv.org/abs/1603.08511)], inpainting [[Pathak et al., 2016](https://arxiv.org/abs/1604.07379)], attribute editing [[Yan et al., 2016a](https://arxiv.org/abs/1512.00570)], interactive editing [[Zhu et al., 2016](https://arxiv.org/abs/1609.03552)], and denoising [[Gharbi et al., 2016](https://groups.csail.mit.edu/graphics/demosaicnet/data/demosaic.pdf)]. But the proposed method differs from those methods at, while prior work focuses on 2D setting, proposed architecture enables 3D-aware image manipulation. In addition to that, often those methods require a structured representation, proposed method can learn internal representations by itself.
+Learning-based methods have enabled their users in various tasks, such as image-to-image translation [[Isola et al., 2017](https://arxiv.org/abs/1611.07004), [Zhu et al., 2017a](https://arxiv.org/abs/1703.10593), [Liu et al., 2017](https://arxiv.org/abs/1703.00848)], style transfer [[Gatys et al., 2016](https://www.cv-foundation.org/openaccess/content_cvpr_2016/papers/Gatys_Image_Style_Transfer_CVPR_2016_paper.pdf)], automatic colorization [[Zhang et al., 2016](https://arxiv.org/abs/1603.08511)], inpainting [[Pathak et al., 2016](https://arxiv.org/abs/1604.07379)], attribute editing [[Yan et al., 2016a](https://arxiv.org/abs/1512.00570)], interactive editing [[Zhu et al., 2016](https://arxiv.org/abs/1609.03552)], and denoising [[Gharbi et al., 2016](https://groups.csail.mit.edu/graphics/demosaicnet/data/demosaic.pdf)]. But the proposed method differs from those methods. While prior work focuses on 2D setting, proposed architecture enables 3D-aware image manipulation. In addition to that, often those methods require a structured representation, proposed method can learn internal representations by itself.
 
 ## **Method**
 In the paper, authors propose a **3D scene de-rendering network (3D-SDN)** in an encoder-decoder framework. As it is said in the introduction chapter, network first de-renders (encodes) an image into disentangled representations for three information sets: **semantic**, **geometric** and **textural**. Then, using those representations, it tries to render (reconstruct, decode) the image into a plausible and similar copy.
@@ -53,7 +53,7 @@ In the paper, authors propose a **3D scene de-rendering network (3D-SDN)** in an
 {% include image.html url="/assets/figures/network_architecture.png" description="Overview of the General Architecture" %}
 
 ### **Branches and Pipeline**
-Mentioned pipeline branches are first decoupled into two parts: **de-renderer** and **renderer**. While semantic branch doesn't have any rendering part, other two parts of the pipeline (namely, geometric and textural) first de-render the image into various representations and for last textural branch combines different outputs from different branches (including its outputs) and tries to generate a plausible image back. Let us see what each parts do individually.
+Mentioned pipeline branches are decoupled into two parts: **de-renderer** and **renderer**. While semantic branch doesn't have any rendering part, other two parts of the pipeline (namely, geometric and textural) first de-render the image into various representations and for last textural branch combines different outputs from different branches (including its outputs) and tries to generate a plausible image back. Let us see what each parts do individually.
 
 #### **Semantic Branch**
 
@@ -62,20 +62,20 @@ Semantic branch does not employ any rendering process, at all. One and only duty
 
 #### **Geometric Branch**
 
-Before anything feed into the inference module of the geometric branch, object instances are segmented by using Mask R-CNN [[He et al., 2017]](#home).Mask R-CNN generates an image patch and bounding box for each detected object in given image. And afterwards, geometric branch tries to infer 3D mesh model and attributes of each object segmented from the masked image patch and bounding box. So how does it do that?
+Before anything fed into the inference module of the geometric branch, object instances are segmented by using Mask R-CNN [[He et al., 2017]](https://arxiv.org/pdf/1703.06870.pdf). Mask R-CNN generates an image patch and bounding box for each detected object in given image. And afterwards, geometric branch tries to infer 3D mesh model and attributes of each object segmented, from the masked image patch and bounding box. So how does it do that?
 
 {% include image.html url="/assets/figures/geo_branch.png" description="Geometric Branch Pipeline" %}
 
-An object present in the given image are described via its 3D mesh model $$ \textbf{M} $$, scale $$ \textbf{s} \in R^{3}$$, rotation quaternion $$ \textbf{q} \in R^{4} $$ and translation from the camera center $$ \textbf{t} \in R^{3} $$. For the simplicity, authors assume that for the most real-world problems, objects are assumed lie on the ground and therefore have only one rotational degree of freedom. Therefore, they do not employ the full quaternion and convert it to a one-value vector, $$ \textbf{q} \in R $$. After defining the attributes of geometric branch, let us describe how they formulate the training objective for the network.
+An object present in the given image is described via its 3D mesh model $$ \textbf{M} $$, scale $$ \textbf{s} \in R^{3}$$, rotation quaternion $$ \textbf{q} \in R^{4} $$ and translation from the camera center $$ \textbf{t} \in R^{3} $$. For the simplicity, it is assumed that objects lie on the ground and therefore have only one rotational degree of freedom for the most of the real-world problems. Therefore, they do not employ the full quaternion and convert it to a one-value vector, $$ \textbf{q} \in R $$. After defining the attributes of geometric branch, let us describe how they formulate the training objective for the network.
 
 
 ##### **3D Attribute Prediction Loss**
 
 The de-renderer part directly predicts the values of $$ \textbf{s} $$ and $$ \textbf{q} $$. But, for the translation inference, it is not straightforward compared to others. Instead, they separate the translation vector $$ \textbf{t} $$ into two parts as one being the object's distance to camera plane, $$ t $$ and the other one is the 2D image coordinates of the object's center in 3D world, $$ [x_{3D}, y_{3D}] $$. Combining those two and given intrinsic matrix of the camera, one can implement the $$ \textbf{t} $$ of the mentioned object.
 
-To predict $$ t $$, first they parametrize t in the log-space [[Eigen et al., 2014]](#home) and reparametrize it to a normalized distance $$ \tau = t\sqrt{wh} $$ where $$ [w, h] $$ is the width and height of the bounding box, respectively. Additionally, to infer $$ [x_{3D}, y_{3D}] $$, following a prior work [[Ren et al., 2015]](#home), they predict the offset distance from the estimated bounding box center $$ [x_{2D}, y_{2D}] $$, and thus the estimated offset becomes $$ e = [(x_{3D}-x_{2D})/w, (y_{3D}-y_{2D})/h] $$.
+To predict $$ t $$, first they parametrize $$ t $$ in the **log-space** [[Eigen et al., 2014]](https://papers.nips.cc/paper/5539-depth-map-prediction-from-a-single-image-using-a-multi-scale-deep-network.pdf) and reparametrize it to a normalized distance $$ \tau = t\sqrt{wh} $$ where $$ [w, h] $$ is the width and height of the bounding box, respectively. Additionally, to infer $$ [x_{3D}, y_{3D}] $$, following the prior work in **Faster R-CNN** [[Ren et al., 2015]]([#home](https://arxiv.org/pdf/1506.01497.pdf)), they predict the offset distance from the estimated bounding box center $$ [x_{2D}, y_{2D}] $$, and thus the estimated offset becomes $$ e = [(x_{3D}-x_{2D})/w, (y_{3D}-y_{2D})/h] $$.
 
-Combining all those aforementioned attributes in a loss function yields one of the training objectives of geometric de-renderer part as 
+Combining all those aforementioned attributes in a loss function yields one of the training objectives of geometric de-renderer part as,
 
 $$
     \mathcal{L}_{pred} = 
@@ -89,9 +89,9 @@ where $$ \tilde{.} $$ denotes the respective predicted attribute.
 
 ##### **Reprojection Consistency Loss**
 
-Another training objective of the geometric de-renderer part is ensuring the 2D rendering of the predicted 3D mesh model $$ \textbf{M} $$ matches its silhoutte $$ \textbf{S} $$ so that 3D mesh model with the Free-Form Deformation (FFD) [[Sederberg and Party, 1986]](#home) parameters best fits the detected object. This is the **reprojection loss**. It should also be noted that  since they have no ground truth value of the objects in images, reprojection loss is the only training signal for mesh selection and silhoutte calibration (namely finding the deformation parameters).
+Another training objective of the geometric de-renderer part is ensuring the 2D rendering of the predicted 3D mesh model $$ \textbf{M} $$ matches its silhoutte $$ \textbf{S} $$ so that 3D mesh model with the Free-Form Deformation (FFD) [[Sederberg and Party, 1986]](http://faculty.cs.tamu.edu/schaefer/teaching/689_Fall2006/p151-sederberg.pdf) parameters best fit the detected object's 2D silhoutte. This is the **reprojection loss**. It should also be noted that since they have no ground truth 3D shapes of the objects in images, reprojection loss is the only training signal for mesh selection and silhoutte calibration (namely finding the deformation parameters).
 
-To render the 2D silhoutte of 3D mesh model, they use a differential renderer [[Kato et al., 2018]](#home), according to the FFD parameters $$ \phi $$ and predicted 3D attributes of the given image $$ \tilde{\pi} = \{\tilde{\textbf{s}}, \tilde{\textbf{q}}, \tilde{\textbf{t}}\} $$. By convention, the 2D silhoutte of the given 3D mesh model $$ M $$ is a function of $$\phi$$ and $$  \tilde{\pi} $$: $$ \tilde{\textbf{S}} = RenderSilhoutte(\text{FFD}_{\phi}(\textbf{M}), \tilde{\pi}) $$.
+To render the 2D silhoutte of 3D mesh model, they use a differential renderer [[Kato et al., 2018]](https://arxiv.org/abs/1711.07566), according to the FFD parameters $$ \phi $$ and predicted 3D attributes of the given image $$ \tilde{\pi} = \{\tilde{\textbf{s}}, \tilde{\textbf{q}}, \tilde{\textbf{t}}\} $$. By convention, the 2D silhoutte of the given 3D mesh model $$ M $$ is a function of $$\phi$$ and $$  \tilde{\pi} $$: $$ \tilde{\textbf{S}} = RenderSilhoutte(\text{FFD}_{\phi}(\textbf{M}), \tilde{\pi}) $$.
 
 So, another training objective comes into the action:
 
@@ -101,7 +101,7 @@ $$
 
 {% include image.html url="/assets/figures/reproj.png" description="Object silhouttes rendered with and without reprojection loss" %}
 
-All above, we defined how they achieve a training objective for consistency when they have tried to find the suitable mesh model and deformation parameters. This procedure can directly infer the deformation parameters, but mesh model selection is non-differentiable and just doing backpropagation will not take it anywhere, at all. Therefore, they reformulate the whole problem as reinforcement learning problem. They adopt a multi-sample REINFORCE algorithm [[Williams, 1992]](#home) to choose a suitable mesh from a set of eight candidate meshes using the negative $$  \mathcal{L}_{reproj} $$ as the reward.
+All above, we defined how they achieve a training objective for consistency when they have tried to find the suitable mesh model and deformation parameters. This procedure can directly infer the deformation parameters, but mesh model selection is non-differentiable and just doing backpropagation will not take it anywhere, at all. Therefore, they reformulate the whole problem as reinforcement learning problem. They adopt a multi-sample REINFORCE algorithm [[Williams, 1992]](https://link.springer.com/content/pdf/10.1007/BF00992696.pdf) to choose a suitable mesh from a set of eight candidate meshes using the negative $$  \mathcal{L}_{reproj} $$ as the reward.
 
 {% include image.html url="/assets/figures/reinforce.png" description="Using REINFORCE and allowing FFD enables precise reconstruction" %}
 
@@ -111,7 +111,7 @@ After de-rendering process, geometric de-renderer combines all information gathe
 
 Now we have got the 3D geometric attributes of the objects and also the semantic segmentation of the given scene, we can infer textural features of each detected object.
 
-First of all, textural branch combines the semantic map from the semantic semantic branch and the instance map from the geometric branch to generate an instance-wise semantic label map $$ \textbf{L} $$. Resultant label map encodes which pixels in the image are the objects pixels and whether instance class of the each object pixel belongs to a foreground object or a background object. And also, during combination any conflict is resolved in favor of the instance map [[Kirillov et al., 2018]](#home). Using an extended version of the models used in multimodal image-to-image translation [[Zhu et al., 2017b](#home), [Wang et al., 2018](#home)], a **textural de-renderer** encodes the texture information into a low-dimensional embedding and later a **textural renderer** tries to reconstruct the original image from that representation. Let us break into pieces how the whole branch de-renders and renders given image:
+First of all, textural branch combines the semantic map from the semantic semantic branch and the instance map from the geometric branch to generate an instance-wise semantic label map $$ \textbf{L} $$. Resultant label map encodes which pixels in the image are the objects pixels and whether instance class of the each object pixel belongs to a foreground object or a background object. And also, during combination, any conflict is resolved in favor of the instance map [[Kirillov et al., 2018]](https://arxiv.org/abs/1801.00868). Using an extended version of the models used in multimodal image-to-image translation [[Zhu et al., 2017b](https://arxiv.org/abs/1711.11586), [Wang et al., 2018](https://arxiv.org/abs/1711.11585)], a **textural de-renderer** encodes the texture information into a low-dimensional embedding and later a **textural renderer** tries to reconstruct the original image from that representation. Let us break into pieces how the whole branch de-renders and renders given image:
 
 Given an image $$ \textbf{I} $$ and its instance-wise label map $$ \textbf{L} $$, the objective is to obtain a low-dimensional embedding $$ \textbf{z} $$ such that from $$ (\textsf{L}, \textbf{z}) $$, it is possible the reconstruct a plausible copy of the original image. The whole idea is formulated as a conditional adversarial learning framework with three networks $$ (G, D, E) $$:
 
@@ -139,7 +139,7 @@ $$
 $$
 
 ##### **Stabilizing GAN Training**
-GAN models can suffer severely from the non-convergence problem. The generator tries to find the best image to fool the discriminator, while discriminator tries to counterattack this proposal by labeling it as not-a-plausible reconstruction. The "best" image keeps changing while both networks are counteracting each other. However, this might turn out to be a never-ending cat-and-mouse game and model unfortunately never converges to a steady state. To overcome this and stabilize the training, authors follow the prior work in [[Wang et al., 2018]](#home) and use both discriminator matching loss [[Wang et al., 2018](#home), [Larsen et al., 2018]](#home) and perceptual loss [[Dosovitsky and Brox, 2016](#home), [Johnson et al., 2016](#home)] and both of which goal to minimize the statistical difference between the feature vectors of real image and the reconstructed image. For the perceptual loss, feature vectors are generated from the intermediate layers of the VGG network [[Simonyan and Zesserman, 2015](#home)] and for the discriminator feature matching loss, as the name suggests, they are generated using the layers of discriminator network. And the overall objective becomes as
+GAN models can suffer severely from the non-convergence problem. The generator tries to find the best image to fool the discriminator, while discriminator tries to counterattack this proposal by labeling it as not-a-plausible reconstruction. The "best" image keeps changing while both networks are counteracting each other. However, this might turn out to be a never-ending cat-and-mouse game and model unfortunately never converges to a steady state. To overcome this and stabilize the training, authors follow the prior work in [[Wang et al., 2018](https://arxiv.org/abs/1711.11585)] and use both discriminator matching loss [[Wang et al., 2018](https://arxiv.org/abs/1711.11585), [Larsen et al., 2018]](https://arxiv.org/abs/1512.09300) and perceptual loss [[Dosovitsky and Brox, 2016](https://arxiv.org/abs/1602.02644), [Johnson et al., 2016](https://arxiv.org/abs/1603.08155)] and both of which goal to minimize the statistical difference between the feature vectors of real image and the reconstructed image. For the perceptual loss, feature vectors are generated from the intermediate layers of the VGG network [[Simonyan and Zesserman, 2015](https://arxiv.org/abs/1409.1556)] and for the discriminator feature matching loss, as the name suggests, they are generated using the layers of discriminator network. And the overall objective becomes as
 
 $$
     \mathcal{L}_{FM}(\textit{G}, \textit{D}, \textit{E}) = \mathbb{E}_{\textbf{L}, \textbf{I}} \Big [
@@ -166,15 +166,15 @@ where $$ \lambda_{FM} $$ and $$ \lambda_{Recon} $$ are the relative importance o
 In this section, authors detail the implementation and trainig configuration for each branch.
 
 ##### **Semantic Branch**
-Semantic branch adopts Dilated Residual Networks for semantic segmentation. Network is trained for 25 epochs.
+Semantic branch adopts Dilated Residual Networks [[Yu et al., 2017](https://arxiv.org/abs/1705.09914)] for semantic segmentation. Network is trained for 25 epochs.
 
 ##### **Geometric Branch**
-They use Mask-RCNN for object proposal. For object meshes, they choose eight different CAD models from ShapeNet [[Chang et al., 2015](#home)] as candidates. They set $$ \lambda_{reproj} = 0.1 $$. They first train the network alone with $$ \mathcal{L}_{pred} $$ using Adam optimizer [[Kingma et al., 2015](#home)] by setting learning rate to $$10^{-3}$$ for $$ 256 $$ epochs and then fine-tune it with 
+They use Mask-RCNN [[He et al., 2018](https://arxiv.org/pdf/1703.06870.pdf)] for object proposal. For object meshes, they choose eight different CAD models from ShapeNet [[Chang et al., 2015](https://arxiv.org/abs/1512.03012)] as candidates. They set $$ \lambda_{reproj} = 0.1 $$. They first train the network alone with $$ \mathcal{L}_{pred} $$ using Adam optimizer [[Kingma et al., 2015](https://arxiv.org/abs/1412.6980)] by setting learning rate to $$10^{-3}$$ for $$ 256 $$ epochs and then fine-tune it with 
 $$ \mathcal{L}_{pred} + \lambda_{reproj}\mathcal{L}_{reproj} $$ 
 and REINFORCE with a learning rate of $$ 10^{-4} $$ for another 64 epochs.
 
 ##### **Textural Branch**
-They use same architecture as in [Wang et al., 2018](#home). They use two different discriminators of different scales and one generator. They set $$ \lambda_{FM} = 5 $$ and $$ \lambda_{Recon} = 10 $$ and train the textural branch for $$ 60 $$ epoch on Virtual KITTI and $$ 100 $$ epoch on Cityscapes.
+They use same architecture as in [Wang et al., 2018](https://arxiv.org/abs/1711.11585). They use two different discriminators of different scales and one generator. They set $$ \lambda_{FM} = 5 $$ and $$ \lambda_{Recon} = 10 $$ and train the textural branch for $$ 60 $$ epoch on Virtual KITTI and $$ 100 $$ epoch on Cityscapes.
 
 ### **Results and Comparisons**
 Results in the paper are reported two-fold:
@@ -202,12 +202,12 @@ To allow to evaluate image editing capabilities, they have built the **Virtual K
 {% include image.html url="/assets/figures/kitti.png" description="Example user editing results on Virtual KITTI" %}
 {% include image.html url="/assets/figures/city_scapes.png" description="Example user editing results on Cityscapes" %}
 
-For the comparison metric, they employ Learned Perceptual Image Patch Similarity (LPIPS) [[Zhang et al., 2018](#home)], instead of adopting the L1 or L2 distance, since, while two images may differ slightly in perception, their L1/L2 distance may have a large value. They compare proposed model and the baselines and apply LPIPS in three different configurations:
+For the comparison metric, they employ Learned Perceptual Image Patch Similarity (LPIPS) [[Zhang et al., 2018](https://arxiv.org/abs/1801.03924)], instead of adopting the L1 or L2 distance, since, while two images may differ slightly in perception, their L1/L2 distance may have a large value. They compare proposed model and the baselines and apply LPIPS in three different configurations:
 1.  **The full image**: Evaluate the perceptual similarity on the whole image (whole)
 2.  **All edited regions**: Evaluate the perceptual similarity on all the edited regions (all)
 3.  **Largest edited region**: Evaluate the perceptual similarity only on the largest edited region (largest)
 
-Addition to the quantitative evaluation, they also conduct an human study in which participants report their preferences on 3D-SDN over two other baselines according to which edited result looks closer to the target. They ask 120 human subjects on [Amazon Mechanical Turk](#home) and ask them whether which image is more realistic than the other in two settings: 3D-SDN vs. 2D and 3D-SDN vs 2D+.
+Addition to the quantitative evaluation, they also conduct an human study in which participants report their preferences on 3D-SDN over two other baselines according to which edited result looks closer to the target. They ask 120 human subjects on [Amazon Mechanical Turk](https://www.mturk.com/) and ask them whether which image is more realistic than the other in two settings: 3D-SDN vs. 2D and 3D-SDN vs 2D+.
 
 {% include image.html url="/assets/figures/editing_results.png" description="Evaluations on Editing Benchmark" %}
 
@@ -220,7 +220,7 @@ To understand contributions of each component proposed, they experiment on four 
 3. **w/o normalized distance $$\tau$$**: Predict the original distance in log-space rather than the normalized distance
 4. **w/o MultiCAD and FFD**: Use single CAD model without free-form deformation
    
-They also add a 3D box estimation model [[Mousavian et al., 2017]](#home), which first infers the object's 2D bounding box and searches for its 3D bounding box, to the comparison list.
+They also add a 3D box estimation model [[Mousavian et al., 2017]](https://arxiv.org/abs/1612.00496), which first infers the object's 2D bounding box and searches for its 3D bounding box, to the comparison list.
 
 {% include image.html url="/assets/figures/design_results.png" description="Evaluation of Different Variants on Virtual KITTI" %}
 
